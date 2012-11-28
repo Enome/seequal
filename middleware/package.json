@@ -1,0 +1,10 @@
+{
+  "name": "seequal-middleware",
+  "version": "1.0.0",
+  "author": "Geert Pasteels",
+  "dependencies": {
+    "seequal": "~1.0.0",
+    "underscore": "~1.4.2",
+    "dotnotation": "~1.0.1"
+  }
+}
