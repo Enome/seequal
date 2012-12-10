@@ -21,7 +21,23 @@ var utils = {
 
     return result;
 
-  }
+  },
+
+  args: function (args) {
+
+    var local;
+
+    if (typeof args[0] === 'string') {
+      local = args.shift();
+    }
+
+    return {
+      local: local,
+      query: args.shift(),
+      values: args
+    };
+
+  },
 
 };
 

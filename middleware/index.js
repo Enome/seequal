@@ -3,20 +3,20 @@ var seequal = require('seequal');
 
 var middleware = {
 
-  execute: function (query) {
+  execute: function () {
 
-    var args = Array.prototype.slice.call(arguments, 1);
+    var args = utils.args(Array.prototype.slice.call(arguments));
 
     return function (req, res, next) {
 
-      var values = utils.find(args, req, res);
+      var values = utils.find(args.values, req, res);
 
-      values.unshift(query);
+      values.unshift(args.query);
 
       var result = seequal.apply(null, values);
 
       result.success(function (response) {
-        res.locals.result = response;
+        res.locals[args.local || 'result'] = response;
         next();
       });
 
@@ -30,18 +30,18 @@ var middleware = {
 
   many: function (query) {
 
-    var args = Array.prototype.slice.call(arguments, 1);
+    var args = utils.args(Array.prototype.slice.call(arguments));
 
     return function (req, res, next) {
 
-      var values = utils.find(args, req, res);
+      var values = utils.find(args.values, req, res);
 
-      values.unshift(query);
+      values.unshift(args.query);
 
       var result = seequal.apply(null, values);
 
       result.many(function (response) {
-        res.locals.many = response;
+        res.locals[args.local || 'many'] = response;
         next();
       });
 
@@ -60,18 +60,18 @@ var middleware = {
 
   one: function (query) {
 
-    var args = Array.prototype.slice.call(arguments, 1);
+    var args = utils.args(Array.prototype.slice.call(arguments));
 
     return function (req, res, next) {
 
-      var values = utils.find(args, req, res);
+      var values = utils.find(args.values, req, res);
 
-      values.unshift(query);
+      values.unshift(args.query);
 
       var result = seequal.apply(null, values);
 
       result.one(function (response) {
-        res.locals.one = response;
+        res.locals[args.local || 'one'] = response;
         next();
       });
 

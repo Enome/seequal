@@ -1,5 +1,4 @@
-var middleware = require('./');
-var utils = require('./utils');
+var middleware = require('../');
 var recorder = require('express-recorder');
 
 describe('Seequal Middleware', function () {
@@ -45,6 +44,32 @@ describe('Seequal Middleware', function () {
         done();
       });
 
+    });
+
+    it('can take a custom locals object', function (done) {
+
+      var query = function (name, age, callback) {
+        callback(null, { name: name, age: age });
+      };
+
+      var handler = middleware.execute('person', query, 'query.name', 'locals.age');
+
+      var state = {
+        query: { name: 'james' },
+        locals: { age: 50 },
+      };
+
+      recorder(handler, state, function (result) {
+
+        result.eql({
+          locals: { person: { name: 'james', age: 50 }, age: 50 },
+          next: true
+        });
+
+        done();
+
+      });
+      
     });
 
   });
@@ -102,6 +127,29 @@ describe('Seequal Middleware', function () {
 
       recorder(handler, function (result) {
         result.eql({ next: { error: 'some error' } });
+        done();
+      });
+
+    });
+
+    it('can take a custom local', function (done) {
+
+      var query = function (id, size, callback) {
+        callback(null, [id, size]);
+      };
+
+      var handler = middleware.many('objects', query, 'query.id', 'params.size');
+
+      var state = {
+        query: { id: 55 },
+        params: { size: 999 }
+      };
+
+      recorder(handler, state, function (result) {
+        result.eql({
+          locals : {objects: [55, 999]},
+          next: true,
+        });
         done();
       });
 
@@ -166,70 +214,27 @@ describe('Seequal Middleware', function () {
 
     });
 
-  });
+    it('can take a custom local', function (done) {
 
-});
+      var query = function (id, size, callback) {
+        callback(null, [id, size]);
+      };
 
-describe('Seequal Utils', function () {
+      var handler = middleware.one('object', query, 'query.id', 'params.size');
 
-  var req, res;
+      var state = {
+        query: { id: 55 },
+        params: { size: 999 },
+      };
 
-  beforeEach(function () {
+      recorder(handler, state, function (result) {
+        result.eql({
+          locals : { object: 55 },
+          next: true,
+        });
+        done();
+      });
 
-    req = {
-      params: { name: 'james' },
-      query: { age: 15, size: 23 },
-      body: { owner: 'jim' },
-      session: { id: 'abc' },
-    };
-
-    res = {
-      locals: {
-        data: 'something',
-        length: 12.00,
-      }
-    };
-
-  });
-
-  describe('find', function () {
-
-    it('finds the name param value', function () {
-      utils.find(['params.name'], req, res).should.eql(['james']);
-    });
-
-    it('finds the age query value', function () {
-      utils.find(['query.age'], req, res).should.eql([15]);
-    });
-
-    it('finds the size query value', function () {
-      utils.find(['query.size'], req, res).should.eql([23]);
-    });
-
-    it('finds the owner body value', function () {
-      utils.find(['body.owner'], req, res).should.eql(['jim']);
-    });
-
-    it('finds the session id value', function () {
-      utils.find(['session.id'], req, res).should.eql(['abc']);
-    });
-
-    it('finds the data locals value', function () {
-      utils.find(['locals.data'], req, res).should.eql(['something']);
-    });
-
-    it('finds the length locals value', function () {
-      utils.find(['locals.length'], req, res).should.eql([12.00]);
-    });
-
-    it('finds the length locals value and both query values', function () {
-      utils.find(['query.age', 'query.size', 'locals.length'], req, res).should.eql([15, 23, 12.00]);
-    });
-
-    it('throws a property not found error', function () {
-      (function () {
-        utils.find(['query.car', 'query.size'], req, res);
-      }).should.throw('Property not found: query.car');
     });
 
   });
