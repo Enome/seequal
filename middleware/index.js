@@ -28,7 +28,7 @@ var middleware = {
 
   },
 
-  many: function (query) {
+  many: function () {
 
     var args = utils.args(Array.prototype.slice.call(arguments));
 
@@ -58,7 +58,7 @@ var middleware = {
 
   },
 
-  one: function (query) {
+  one: function () {
 
     var args = utils.args(Array.prototype.slice.call(arguments));
 

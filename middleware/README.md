@@ -4,7 +4,7 @@ For more info checkout seequal.
 
 ```js
 var middleware = require('seequal-middleware');
-middleware.execute(query, 'params.id'); // sets locals.result
-middleware.many(query, 'query.user'); // sets locals.many
-middleware.one(query, 'body.size'); // sets locals.one
+middleware.execute('optional local name', query, 'params.id'); // sets locals.result
+middleware.many'optional local name', (query, 'query.user'); // sets locals.many
+middleware.one'optional local name', (query, 'body.size'); // sets locals.one
 ```

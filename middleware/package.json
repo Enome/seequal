@@ -1,6 +1,6 @@
 {
   "name": "seequal-middleware",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "Geert Pasteels",
   "dependencies": {
     "seequal": "~1.0.0",
